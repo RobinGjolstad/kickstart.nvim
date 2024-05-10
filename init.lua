@@ -216,7 +216,7 @@ vim.keymap.set("n", "Q", "<nop>", { desc = "Disable \"Quick run macro\"" })
 
 -- Delete the highlighted bit and _don't_ place it in the "print" register
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]],
-    { desc = "Delete the hightlighted text and _dont_ put it into the \"print\" register" })
+  { desc = "Delete the hightlighted text and _dont_ put it into the \"print\" register" })
 
 -- Format document with LSP-provided formatter.
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Auto-format" })
@@ -302,7 +302,7 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',  opts = {} },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -337,7 +337,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  { -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -389,7 +389,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -483,11 +483,11 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      { 'folke/neodev.nvim',       opts = {} },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -675,7 +675,7 @@ require('lazy').setup({
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               diagnostics = {
                 globals = { 'vim' },
-                disable = { 'missing-fields' } 
+                disable = { 'missing-fields' }
               },
             },
           },
@@ -861,6 +861,8 @@ require('lazy').setup({
     end,
   },
 
+  --[[
+  -- Move color scheme to separate file, catppuccin.lua
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -880,9 +882,10 @@ require('lazy').setup({
       vim.cmd.hi 'Comment gui=none'
     end,
   },
+  --]]
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -900,22 +903,71 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      -- local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -- statusline.section_location = function()
+      --   return '%2l:%-2v'
+      -- end
+
+      local map = require('mini.map')
+      map.setup {
+        {
+          -- Highlight integrations (none by default)
+          integrations = {
+            map.gen_integration.diagnostic({
+              error = 'DiagnosticFloatingError',
+              warn = 'DiagnosticFloatingWarn',
+            }),
+            map.gen_integration.gitsigns(),
+            map.gen_integration.builtin_search(),
+          },
+
+          -- Symbols used to display data
+          symbols = {
+            -- Encode symbols. See `:h MiniMap.config` for specification and
+            -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
+            -- Default: solid blocks with 3x2 resolution.
+            encode = map.gen_encode_symbols.dot('4x2'),
+
+            -- Scrollbar parts for view and line. Use empty string to disable any.
+            scroll_line = '█',
+            scroll_view = '┃',
+          },
+
+          -- Window options
+          window = {
+            -- Whether window is focusable in normal way (with `wincmd` or mouse)
+            focusable = false,
+
+            -- Side to stick ('left' or 'right')
+            side = 'right',
+
+            -- Whether to show count of multiple integration highlights
+            show_integration_count = true,
+
+            -- Total width
+            width = 25,
+
+            -- Value of 'winblend' option
+            winblend = 25,
+          },
+        }
+      }
+      vim.keymap.set("n", "<leader>mmt", map.toggle,
+        { desc = "Open the minimap" })
+      vim.keymap.set("n", "<leader>mmf", map.toggle_focus,
+        { desc = "Toggle focus to the minimap" })
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
