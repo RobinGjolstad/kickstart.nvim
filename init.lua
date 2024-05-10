@@ -119,6 +119,11 @@ vim.opt.clipboard = 'unnamedplus'
 vim.opt.breakindent = true
 
 -- Save undo history
+if vim.loop.os_uname().sysname:match('Windows') then
+  vim.opt.undodir = os.getenv("USERPROFILE") .. "/.vim/undodir"
+else
+  vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+end
 vim.opt.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
@@ -176,6 +181,45 @@ vim.opt.linebreak = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+-- Return to netrw file explorer
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+
+-- Allow moving vertical movement even on wrapped lines.
+vim.keymap.set({ "n", "v" }, "j", "gj", { desc = "Move up" })
+vim.keymap.set({ "n", "v" }, "k", "gk", { desc = "Move down" })
+
+-- Move highlighted lines up/down
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move highlighted line up" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move highlighted line down" })
+
+-- Moves up and down half a page, but centers the cursor
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Move down a half page" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Move up a half page" })
+
+-- Center the cursor when cycling through search results
+vim.keymap.set("n", "n", "nzzzv", { desc = "Jump to next search result" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Jump to previous search result" })
+
+-- greatest remap ever
+-- Prints value from register and does _not_ replace the register with whatever
+-- was highlighted.
+vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "Print value in register and does not replace contents of register" })
+
+-- next greatest remap ever : asbjornHaland
+-- Yank into global clipboard
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank highlighted text into global clipboard." })
+vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = "Yank line into global clipboard" })
+
+-- `Q` does bad things apparently.
+vim.keymap.set("n", "Q", "<nop>", { desc = "Disable \"Quick run macro\"" })
+
+-- Delete the highlighted bit and _don't_ place it in the "print" register
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]],
+    { desc = "Delete the hightlighted text and _dont_ put it into the \"print\" register" })
+
+-- Format document with LSP-provided formatter.
+vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Auto-format" })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -402,6 +446,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>sp', builtin.git_files, { desc = '[S]earch [P]roject files' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -598,6 +643,26 @@ require('lazy').setup({
         -- tsserver = {},
         --
 
+        clangd = {
+          cmd = {
+            'clangd',
+            '--background-index',
+            '--suggest-missing-includes',
+            '--header-insertion=iwyu',
+            '--cross-file-rename',
+            '--clang-tidy',
+            '--pretty',
+            '--completion-style=detailed',
+            '--all-scopes-completion',
+            -- Toolchains on various machines, specifically important for embedded toolchains.
+            '--query-driver=/opt/arm_toolchain/**/arm-none-eabi-*,C:\\arm_gcc\\**\\arm-none-eabi-*.exe',
+
+          },
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -608,7 +673,10 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                globals = { 'vim' },
+                disable = { 'missing-fields' } 
+              },
             },
           },
         },
@@ -896,9 +964,9 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -907,7 +975,7 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
