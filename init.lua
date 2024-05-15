@@ -119,10 +119,10 @@ vim.opt.clipboard = 'unnamedplus'
 vim.opt.breakindent = true
 
 -- Save undo history
-if vim.loop.os_uname().sysname:match('Windows') then
-  vim.opt.undodir = os.getenv("USERPROFILE") .. "/.vim/undodir"
+if vim.loop.os_uname().sysname:match 'Windows' then
+  vim.opt.undodir = os.getenv 'USERPROFILE' .. '/.vim/undodir'
 else
-  vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+  vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
 end
 vim.opt.undofile = true
 
@@ -183,43 +183,39 @@ vim.opt.linebreak = true
 --  See `:help vim.keymap.set()`
 
 -- Return to netrw file explorer
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 
 -- Allow moving vertical movement even on wrapped lines.
-vim.keymap.set({ "n", "v" }, "j", "gj", { desc = "Move up" })
-vim.keymap.set({ "n", "v" }, "k", "gk", { desc = "Move down" })
+vim.keymap.set({ 'n', 'v' }, 'j', 'gj', { desc = 'Move up' })
+vim.keymap.set({ 'n', 'v' }, 'k', 'gk', { desc = 'Move down' })
 
 -- Move highlighted lines up/down
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move highlighted line up" })
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move highlighted line down" })
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move highlighted line up' })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move highlighted line down' })
 
 -- Moves up and down half a page, but centers the cursor
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Move down a half page" })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Move up a half page" })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Move down a half page' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Move up a half page' })
 
 -- Center the cursor when cycling through search results
-vim.keymap.set("n", "n", "nzzzv", { desc = "Jump to next search result" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Jump to previous search result" })
+vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Jump to next search result' })
+vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Jump to previous search result' })
 
 -- greatest remap ever
 -- Prints value from register and does _not_ replace the register with whatever
 -- was highlighted.
-vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "Print value in register and does not replace contents of register" })
+vim.keymap.set('x', '<leader>p', [["_dP]], { desc = 'Print value in register and does not replace contents of register' })
 
 -- next greatest remap ever : asbjornHaland
 -- Yank into global clipboard
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank highlighted text into global clipboard." })
-vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = "Yank line into global clipboard" })
+vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Yank highlighted text into global clipboard.' })
+vim.keymap.set('n', '<leader>Y', [["+Y]], { desc = 'Yank line into global clipboard' })
 
 -- `Q` does bad things apparently.
-vim.keymap.set("n", "Q", "<nop>", { desc = "Disable \"Quick run macro\"" })
+vim.keymap.set('n', 'Q', '<nop>', { desc = 'Disable "Quick run macro"' })
 
 -- Delete the highlighted bit and _don't_ place it in the "print" register
-vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]],
-  { desc = "Delete the hightlighted text and _dont_ put it into the \"print\" register" })
-
--- Format document with LSP-provided formatter.
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Auto-format" })
+vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]], { desc = 'Delete the hightlighted text and _dont_ put it into the "print" register' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -302,7 +298,7 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',  opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -337,7 +333,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -389,7 +385,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -473,6 +469,10 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'b0o/schemastore.nvim',
+  },
+
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -483,11 +483,11 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim',       opts = {} },
+      { 'folke/neodev.nvim', opts = {} },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -656,8 +656,15 @@ require('lazy').setup({
             '--all-scopes-completion',
             -- Toolchains on various machines, specifically important for embedded toolchains.
             '--query-driver=/opt/arm_toolchain/**/arm-none-eabi-*,C:\\arm_gcc\\**\\arm-none-eabi-*.exe',
-
+            '--offset-encoding=utf-16',
           },
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+
+        cmake = {
+          -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
           -- settings = {},
@@ -675,8 +682,72 @@ require('lazy').setup({
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               diagnostics = {
                 globals = { 'vim' },
-                disable = { 'missing-fields' }
+                disable = { 'missing-fields' },
               },
+            },
+          },
+        },
+
+        yamlls = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          settings = {
+            yaml = {
+              schemas = require('schemastore').json.schemas {
+                select = {
+                  'gitlab-ci',
+                },
+              },
+              validate = { enable = true },
+            },
+          },
+        },
+
+        bashls = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+
+        dockerls = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+        pylsp = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+        tsserver = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+        html = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          -- settings = {},
+        },
+        jsonls = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          settings = {
+            json = {
+              schemas = require('schemastore').json.schemas {
+                select = {
+                  'GitHub Workflow Template Properties',
+                  'CMake Presets',
+                },
+              },
+              validate = { enable = true },
             },
           },
         },
@@ -741,11 +812,12 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         -- javascript = { { "prettierd", "prettier" } },
+        cmake = { 'cmake-format' },
       },
     },
   },
@@ -920,15 +992,15 @@ require('lazy').setup({
       --   return '%2l:%-2v'
       -- end
 
-      local map = require('mini.map')
+      local map = require 'mini.map'
       map.setup {
         {
           -- Highlight integrations (none by default)
           integrations = {
-            map.gen_integration.diagnostic({
+            map.gen_integration.diagnostic {
               error = 'DiagnosticFloatingError',
               warn = 'DiagnosticFloatingWarn',
-            }),
+            },
             map.gen_integration.gitsigns(),
             map.gen_integration.builtin_search(),
           },
@@ -938,7 +1010,7 @@ require('lazy').setup({
             -- Encode symbols. See `:h MiniMap.config` for specification and
             -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
             -- Default: solid blocks with 3x2 resolution.
-            encode = map.gen_encode_symbols.dot('4x2'),
+            encode = map.gen_encode_symbols.dot '4x2',
 
             -- Scrollbar parts for view and line. Use empty string to disable any.
             scroll_line = '█',
@@ -962,12 +1034,10 @@ require('lazy').setup({
             -- Value of 'winblend' option
             winblend = 25,
           },
-        }
+        },
       }
-      vim.keymap.set("n", "<leader>mmt", map.toggle,
-        { desc = "Open the minimap" })
-      vim.keymap.set("n", "<leader>mmf", map.toggle_focus,
-        { desc = "Toggle focus to the minimap" })
+      vim.keymap.set('n', '<leader>mmt', map.toggle, { desc = 'Open the minimap' })
+      vim.keymap.set('n', '<leader>mmf', map.toggle_focus, { desc = 'Toggle focus to the minimap' })
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
