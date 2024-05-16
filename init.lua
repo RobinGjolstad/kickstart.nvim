@@ -175,6 +175,9 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
+-- Add width rulers
+vim.opt.colorcolumn = { '80', '100' }
+
 -- Line wrapping behavior
 vim.opt.wrap = false
 vim.opt.linebreak = true
