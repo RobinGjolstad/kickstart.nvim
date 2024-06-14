@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -623,6 +623,12 @@ require('lazy').setup({
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
+      -- Settings for adding borders to floating windows.
+      local handlers = {
+        ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' }),
+        ['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = 'rounded' }),
+      }
+
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -649,11 +655,12 @@ require('lazy').setup({
         clangd = {
           cmd = {
             'clangd',
+            '-j=8',
             '--background-index',
-            '--suggest-missing-includes',
             '--header-insertion=iwyu',
-            '--cross-file-rename',
+            '--header-insertion-decorators',
             '--clang-tidy',
+            '--clang-tidy-checks=*',
             '--pretty',
             '--completion-style=detailed',
             '--all-scopes-completion',
@@ -661,12 +668,14 @@ require('lazy').setup({
             '--query-driver=/opt/arm_toolchain/**/arm-none-eabi-*,C:\\arm_gcc\\**\\arm-none-eabi-*.exe',
             '--offset-encoding=utf-16',
           },
+          handlers = handlers,
           -- filetypes = { ...},
           -- capabilities = {},
           -- settings = {},
         },
 
         cmake = {
+          handlers = handlers,
           -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
@@ -689,6 +698,7 @@ require('lazy').setup({
               },
             },
           },
+          handlers = handlers,
         },
 
         yamlls = {
@@ -700,14 +710,18 @@ require('lazy').setup({
               schemas = require('schemastore').json.schemas {
                 select = {
                   'gitlab-ci',
+                  'clang-format (.clang-format)',
+                  'clangd',
                 },
               },
               validate = { enable = true },
             },
           },
+          handlers = handlers,
         },
 
         bashls = {
+          handlers = handlers,
           -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
@@ -715,24 +729,28 @@ require('lazy').setup({
         },
 
         dockerls = {
+          handlers = handlers,
           -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
           -- settings = {},
         },
         pylsp = {
+          handlers = handlers,
           -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
           -- settings = {},
         },
         tsserver = {
+          handlers = handlers,
           -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
           -- settings = {},
         },
         html = {
+          handlers = handlers,
           -- cmd = {...},
           -- filetypes = { ...},
           -- capabilities = {},
@@ -748,9 +766,86 @@ require('lazy').setup({
                 select = {
                   'GitHub Workflow Template Properties',
                   'CMake Presets',
+                  'clang-format (.clang-format)',
                 },
               },
               validate = { enable = true },
+            },
+          },
+          handlers = handlers,
+        },
+
+        gopls = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          settings = {
+            gopls = {
+              analyses = {
+                appends = true,
+                asmdecl = true,
+                assign = true,
+                atomic = true,
+                atomicalign = true,
+                bools = true,
+                cgocall = true,
+                composites = true,
+                copylocks = true,
+                deepequalerrors = true,
+                defers = true,
+                deprecated = true,
+                directive = true,
+                embed = true,
+                errorsas = true,
+                fieldalignment = true,
+                httpresponse = true,
+                ifaceassert = true,
+                loopclosure = true,
+                lostcancel = true,
+                nilfunc = true,
+                nilness = true,
+                printf = true,
+                shadow = true,
+                shift = true,
+                simplifycompositelit = true,
+                simplifyrange = true,
+                simplifyslice = true,
+                slog = true,
+                sortslice = true,
+                stdmethods = true,
+                stringintconv = true,
+                structtag = true,
+                testinggoroutine = true,
+                tests = true,
+                timeformat = true,
+                unmarshal = true,
+                unreachable = true,
+                unsafeptr = true,
+                unusedparams = true,
+                unusedresult = true,
+                unusedwrite = true,
+                useany = true,
+                fillreturns = true,
+                nonewvars = true,
+                noresultvalues = true,
+                undeclaredname = true,
+                unusedvariable = true,
+                fillstruct = true,
+                infertypeargs = true,
+                stubmethods = true,
+              },
+              staticcheck = true,
+              gofumpt = true,
+              codelenses = { test = true },
+              hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+              } or nil,
             },
           },
         },
