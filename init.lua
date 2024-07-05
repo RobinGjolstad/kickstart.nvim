@@ -665,7 +665,7 @@ require('lazy').setup({
             '--completion-style=detailed',
             '--all-scopes-completion',
             -- Toolchains on various machines, specifically important for embedded toolchains.
-            '--query-driver=/opt/arm_toolchain/**/arm-none-eabi-*,C:\\arm_gcc\\**\\arm-none-eabi-*.exe',
+            '--query-driver=/opt/arm*/**/arm-none-eabi-*,C:\\arm_gcc\\**\\arm-none-eabi-*.exe',
             '--offset-encoding=utf-16',
           },
           handlers = handlers,
@@ -677,7 +677,7 @@ require('lazy').setup({
         cmake = {
           handlers = handlers,
           -- cmd = {...},
-          -- filetypes = { ...},
+          filetypes = { 'cmake', 'CMakeLists.txt' },
           -- capabilities = {},
           -- settings = {},
         },
@@ -864,6 +864,9 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'cmakelang',
+        'isort',
+        'black',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1196,6 +1199,12 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
+
+  -- Override line number colors.
+  -- This is done _after_ running custom plugins to replace any settings provided by a theme.
+  vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#51B3EC', bold = true }),
+  vim.api.nvim_set_hl(0, 'LineNr', { fg = 'white', bold = true }),
+  vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#FB508F', bold = true }),
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the

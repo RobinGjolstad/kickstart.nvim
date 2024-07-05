@@ -1,6 +1,9 @@
 -- Configuration can be found at:
 -- https://github.com/mrcjkb/rustaceanvim
 vim.g.rustaceanvim = {
+  inlay_hints = {
+    highlight = 'NonText',
+  },
   tools = {
     float_win_config = {
       opts = {
